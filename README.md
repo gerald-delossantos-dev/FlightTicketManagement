@@ -1,6 +1,6 @@
 # Flight Ticket Management System
 
-A complete take-home assessment application for managing flights and passengers with automatic seat assignment and baggage validation.
+An application for managing flights and passengers with automatic seat assignment and baggage validation.
 
 ## Architecture Summary
 
@@ -8,7 +8,7 @@ The solution is split into a .NET Web API backend and an Angular frontend. The b
 
 ## Technology Stack
 
-- Backend: .NET 10 LTS, ASP.NET Core Web API, C#
+- Backend: .NET 10, ASP.NET Core Web API, C#
 - Frontend: Angular 21, TypeScript, standalone components
 - UI: Angular Material
 - Data Store: In-memory only using `ConcurrentDictionary<int, Flight>`
