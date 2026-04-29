@@ -21,7 +21,7 @@
       </mat-form-field>
 
       <div class="actions">
-        <button mat-raised-button color="primary" type="submit" [disabled]="saving">Add Flight</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || saving">Add Flight</button>
       </div>
     </form>
   </section>

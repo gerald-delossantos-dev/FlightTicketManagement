@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -30,6 +30,7 @@ import { NotificationService } from '../../shared/services/notification.service'
 })
 export class PassengersPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
+  private readonly cdr = inject(ChangeDetectorRef);
   readonly classes: FlightClass[] = ['First', 'Business', 'Economy'];
   readonly displayedColumns = ['seatNumber', 'firstName', 'lastName', 'passengerId', 'class', 'ticketPrice', 'numberOfBags', 'totalBaggageWeight'];
   flightNumber = 0;
@@ -66,11 +67,15 @@ export class PassengersPageComponent implements OnInit {
       flight: this.api.getFlight(this.flightNumber),
       passengers: this.api.getPassengers(this.flightNumber)
     })
-      .pipe(finalize(() => this.loading = false))
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: result => {
           this.flight = result.flight;
           this.passengers = result.passengers;
+          this.cdr.detectChanges();
         },
         error: err => this.notify.error(err.message)
       });
@@ -84,7 +89,10 @@ export class PassengersPageComponent implements OnInit {
 
     this.saving = true;
     this.api.addPassenger(this.flightNumber, this.form.getRawValue())
-      .pipe(finalize(() => this.saving = false))
+      .pipe(finalize(() => {
+        this.saving = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: response => {
           this.notify.success(`${response.message}. Seat ${response.seatNumber} assigned.`);
@@ -98,6 +106,7 @@ export class PassengersPageComponent implements OnInit {
             totalBaggageWeight: 0
           });
           this.load();
+          this.cdr.detectChanges();
         },
         error: err => this.notify.error(err.message)
       });

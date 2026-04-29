@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, AfterViewInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -30,6 +30,7 @@ import { NotificationService } from '../../shared/services/notification.service'
 })
 export class FlightsPageComponent implements OnInit, AfterViewInit {
   private readonly fb = inject(FormBuilder);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -67,9 +68,15 @@ export class FlightsPageComponent implements OnInit, AfterViewInit {
   loadFlights(): void {
     this.loading = true;
     this.api.getFlights()
-      .pipe(finalize(() => this.loading = false))
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
-        next: flights => this.dataSource.data = flights,
+        next: flights => {
+          this.dataSource.data = flights;
+          this.cdr.detectChanges();
+        },
         error: err => this.notify.error(err.message)
       });
   }
@@ -82,12 +89,16 @@ export class FlightsPageComponent implements OnInit, AfterViewInit {
 
     this.saving = true;
     this.api.addFlight(this.form.getRawValue())
-      .pipe(finalize(() => this.saving = false))
+      .pipe(finalize(() => {
+        this.saving = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: flight => {
           this.notify.success(`Flight ${flight.flightNumber} added successfully.`);
           this.form.reset({ flightNumber: 0, destination: '' });
           this.loadFlights();
+          this.cdr.detectChanges();
         },
         error: err => this.notify.error(err.message)
       });
