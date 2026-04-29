@@ -1,0 +1,19 @@
+@use '@angular/material' as mat;
+@include mat.core();
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, Arial, sans-serif; background: #f5f7fb; color: #172033; }
+.container { max-width: 1180px; margin: 0 auto; padding: 24px; }
+.card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(22, 34, 51, 0.08); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; align-items: start; }
+.actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.full-width { width: 100%; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; }
+.clickable-row { cursor: pointer; }
+.clickable-row:hover { background: #f0f4ff; }
+.empty-state { text-align: center; padding: 28px; color: #667085; }
+.header-line { display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; }
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 12px; }
+.summary-item { background: #f8fafc; border: 1px solid #e6eaf0; border-radius: 12px; padding: 12px; }
+.summary-item strong { display: block; font-size: 20px; margin-top: 4px; }

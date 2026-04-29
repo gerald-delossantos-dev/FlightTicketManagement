@@ -1,0 +1,18 @@
+# .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.nupkg
+TestResults/
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+
+# OS / IDE
+.DS_Store
+Thumbs.db

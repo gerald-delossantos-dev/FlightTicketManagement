@@ -1,0 +1,97 @@
+<div class="container">
+  <div class="header-line">
+    <h1>Passengers</h1>
+    <div class="actions">
+      <button mat-stroked-button type="button" (click)="back()">Back to Flights</button>
+      <mat-spinner *ngIf="loading" diameter="32"></mat-spinner>
+    </div>
+  </div>
+
+  <section class="card" *ngIf="flight">
+    <h2>Flight {{ flight.flightNumber }} - {{ flight.destination }}</h2>
+    <div class="summary-grid">
+      <div class="summary-item">Total Passengers<strong>{{ flight.totalPassengers }}</strong></div>
+      <div class="summary-item">Available Seats<strong>{{ flight.availableSeats }}</strong></div>
+      <div class="summary-item">First Available<strong>{{ flight.availableSeatsByClass.first }}</strong></div>
+      <div class="summary-item">Business Available<strong>{{ flight.availableSeatsByClass.business }}</strong></div>
+      <div class="summary-item">Economy Available<strong>{{ flight.availableSeatsByClass.economy }}</strong></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Add Passenger</h2>
+    <form [formGroup]="form" (ngSubmit)="addPassenger()" class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName">
+        <mat-error>First name is required.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName">
+        <mat-error>Last name is required.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Passenger ID</mat-label>
+        <input matInput formControlName="passengerId">
+        <mat-error>Passenger ID is required.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Class</mat-label>
+        <mat-select formControlName="class">
+          <mat-option *ngFor="let c of classes" [value]="c">{{ c }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Ticket Price</mat-label>
+        <input matInput type="number" formControlName="ticketPrice">
+        <mat-error>Ticket price must be 0 or higher.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Number of Bags</mat-label>
+        <input matInput type="number" formControlName="numberOfBags">
+        <mat-error>Number of bags must be 0 or higher.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Total Baggage Weight</mat-label>
+        <input matInput type="number" formControlName="totalBaggageWeight">
+        <mat-error>Baggage weight must be 0 or higher.</mat-error>
+      </mat-form-field>
+
+      <div class="actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || saving">Add Passenger</button>
+      </div>
+
+      <div *ngIf="form.hasError('baggageExceeded')" class="empty-state">
+        Baggage exceeds the selected class limit. Backend validation remains the source of truth.
+      </div>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Passenger List</h2>
+    <div *ngIf="!loading && passengers.length === 0" class="empty-state">No passengers yet for this flight.</div>
+
+    <div class="table-wrap" *ngIf="passengers.length > 0">
+      <table mat-table [dataSource]="passengers">
+        <ng-container matColumnDef="seatNumber"><th mat-header-cell *matHeaderCellDef>Seat Number</th><td mat-cell *matCellDef="let p">{{ p.seatNumber }}</td></ng-container>
+        <ng-container matColumnDef="firstName"><th mat-header-cell *matHeaderCellDef>First Name</th><td mat-cell *matCellDef="let p">{{ p.firstName }}</td></ng-container>
+        <ng-container matColumnDef="lastName"><th mat-header-cell *matHeaderCellDef>Last Name</th><td mat-cell *matCellDef="let p">{{ p.lastName }}</td></ng-container>
+        <ng-container matColumnDef="passengerId"><th mat-header-cell *matHeaderCellDef>Passenger ID</th><td mat-cell *matCellDef="let p">{{ p.passengerId }}</td></ng-container>
+        <ng-container matColumnDef="class"><th mat-header-cell *matHeaderCellDef>Class</th><td mat-cell *matCellDef="let p">{{ p.class }}</td></ng-container>
+        <ng-container matColumnDef="ticketPrice"><th mat-header-cell *matHeaderCellDef>Ticket Price</th><td mat-cell *matCellDef="let p">{{ p.ticketPrice | currency }}</td></ng-container>
+        <ng-container matColumnDef="numberOfBags"><th mat-header-cell *matHeaderCellDef>Number of Bags</th><td mat-cell *matCellDef="let p">{{ p.numberOfBags }}</td></ng-container>
+        <ng-container matColumnDef="totalBaggageWeight"><th mat-header-cell *matHeaderCellDef>Total Baggage Weight</th><td mat-cell *matCellDef="let p">{{ p.totalBaggageWeight }} kg</td></ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </section>
+</div>
